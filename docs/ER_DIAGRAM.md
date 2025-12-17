@@ -4,7 +4,7 @@
 - [FK] — Foreign Key
 - [U]  — Unique
 - <1>  — One
-- <M>  — Many
+- <М>  — Many
 
 [Диаграмма](ER.png)
 
