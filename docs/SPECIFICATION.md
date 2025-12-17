@@ -96,7 +96,7 @@
 
 ### 3.2 ER-диаграмма (текстовое описание)
 
-Полная ER-диаграмма: [docs/ER_DIAGRAM.md](../docs/ER_DIAGRAM.txt)
+Полная ER-диаграмма: [docs/ER_DIAGRAM.md](../docs/ER_DIAGRAM.md)
 
 **Краткое описание связей:**
 
