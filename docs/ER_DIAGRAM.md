@@ -1,12 +1,12 @@
 # ER-ДИАГРАММА 
 
-[PK] — Primary Key
-[FK] — Foreign Key
-[U]  — Unique
-<1>  — One
-<M>  — Many
+- [PK] — Primary Key
+- [FK] — Foreign Key
+- [U]  — Unique
+- <1>  — One
+- <M>  — Many
 
-[](ER.png)
+[Диаграмма](ER.png)
 
 ## СВЯЗИ (RELATIONSHIPS):
 
