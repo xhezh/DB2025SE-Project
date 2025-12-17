@@ -7,6 +7,7 @@
 - <M>  — Many
 
 [Диаграмма](ER.png)
+
 <img width="586" height="1331" alt="image" src="https://github.com/user-attachments/assets/767a4dfe-112a-48f0-9b46-95ab91513a38" />
 
 
