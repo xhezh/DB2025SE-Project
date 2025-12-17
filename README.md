@@ -1,5 +1,8 @@
 # Система бронирования переговорных комнат в коворкингах
 
+# ГЛАВНОЕ: см. [Пояснительную записку] (docs/SPECIFICATION.md)
+
+
 > Проект по базам данных | PostgreSQL + Go
 
 [![Status](https://img.shields.io/badge/status-ready-brightgreen)]()
