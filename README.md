@@ -1,76 +1,71 @@
-## Система бронирования переговорных комнат в коворкингах
-
-# !ГЛАВНОЕ: см. [Пояснительную записку](docs/SPECIFICATION.md)
-
-
-> Проект по базам данных | PostgreSQL + Go
+## Meeting Room Booking System for Coworking Spaces
+# !IMPORTANT: see [Project Specification](docs/SPECIFICATION.md)
+> Database project | PostgreSQL + Go
 
 [![Status](https://img.shields.io/badge/status-ready-brightgreen)]()
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-blue)]()
 [![Go](https://img.shields.io/badge/Go-1.21%2B-00ADD8)]()
 [![License](https://img.shields.io/badge/license-Educational-orange)]()
 
-## Описание
+## Description
 
-Полнофункциональная система управления бронированием переговорных комнат в сети коворкинг-пространств с реализацией:
-- **Предотвращения пересечений бронирований** через EXCLUDE constraint
-- **Атомарных транзакций** для связанных операций
-- **Аналитических отчётов** о загрузке и выручке
-- **Ролевой модели доступа** (user, manager, admin)
+A fully functional booking management system for meeting rooms in a coworking space network, featuring:
 
-## Основные возможности
+- **Booking overlap prevention** via EXCLUDE constraint
+- **Atomic transactions** for related operations
+- **Analytical reports** on occupancy and revenue
+- **Role-based access control** (user, manager, admin)
 
-- Поиск свободных комнат с фильтрами (время, оборудование, вместимость)
-- Автоматический расчёт стоимости бронирования
-- Управление платежами с различными статусами
-- Отчёты о загрузке помещений и выручке
-- Интерактивный CLI для демонстрации
-- Полная нормализация БД (BCNF)
+## Key Features
 
-## Cтек
+- Search for available rooms with filters (time, equipment, capacity)
+- Automatic booking cost calculation
+- Payment management with various statuses
+- Room occupancy and revenue reports
+- Interactive CLI for demonstration
+- Full database normalization (BCNF)
 
-| Компонент | Технология |
-|-----------|------------|
-| Backend | Go 1.21+ |
-| Database | PostgreSQL 14+ |
-| Driver | lib/pq |
-| CLI | bufio (встроенная) |
+## Stack
 
-## Структура проекта
+| Component | Technology     |
+|-----------|----------------|
+| Backend   | Go 1.21+       |
+| Database  | PostgreSQL 14+ |
+| Driver    | lib/pq         |
+| CLI       | bufio (built-in) |
 
+## Project Structure
 ```
 DB2025SE-Project/
-├── cmd/api/main.go              # Главный файл приложения
+├── cmd/api/main.go              # Application entry point
 ├── internal/
-│   ├── models/models.go         # Модели данных
+│   ├── models/models.go         # Data models
 │   └── database/
-│       ├── database.go          # Подключение к БД
-│       └── queries.go           # SQL запросы и транзакции
+│       ├── database.go          # Database connection
+│       └── queries.go           # SQL queries and transactions
 ├── migrations/
-│   ├── schema.sql               # DDL: таблицы, индексы, constraints
-│   ├── seed.sql                 # Тестовые данные
-│   └── queries.sql              # DML: примеры запросов
+│   ├── schema.sql               # DDL: tables, indexes, constraints
+│   ├── seed.sql                 # Test data
+│   └── queries.sql              # DML: example queries
 ├── docs/
-│   ├── SPECIFICATION.md         # Пояснительная записка
-│   └── ER_DIAGRAM.txt           # ER-диаграмма в текстовом формате
+│   ├── SPECIFICATION.md         # Project specification
+│   └── ER_DIAGRAM.txt           # ER diagram in text format
 ├── README.md                    
 ├── Makefile                   
 └── go.mod                       
 ```
 
-## Быстрый старт
-
+## Quick Start
 ```bash
-# Всё в одной команде: установка + БД + запуск
+# Everything in one command: setup + DB + run
 make quickstart
 ```
 
-## Особенности реализации
+## Implementation Highlights
 
 ### 1. EXCLUDE Constraint
 
-Предотвращает двойное бронирование одной комнаты:
-
+Prevents double-booking of the same room:
 ```sql
 CONSTRAINT booking_no_overlap EXCLUDE USING gist (
     room_id WITH =,
@@ -78,24 +73,21 @@ CONSTRAINT booking_no_overlap EXCLUDE USING gist (
 ) WHERE (status IN ('pending', 'confirmed'))
 ```
 
-### 2. Транзакции в Go
+### 2. Transactions in Go
 
-Атомарное выполнение связанных операций:
-
+Atomic execution of related operations:
 ```go
 func (db *DB) CreateBookingWithPayment(...) (*Booking, *Payment, error) {
     tx, _ := db.BeginTx()
     defer tx.Rollback()
-
-    // 1. Создать бронирование
-    // 2. Создать платёж
-
-    tx.Commit() // Либо обе операции успешны, либо обе откатываются
+    // 1. Create booking
+    // 2. Create payment
+    tx.Commit() // Either both operations succeed, or both are rolled back
 }
 ```
 
-### 3. Сложные аналитические запросы
+### 3. Complex Analytical Queries
 
-- Поиск свободных комнат с `WITH` и `tsrange`
-- Отчёт о загрузке с агрегацией и процентами
-- Отчёт о выручке с `GROUP BY` и `CASE`
+- Available room search using `WITH` and `tsrange`
+- Occupancy report with aggregation and percentages
+- Revenue report with `GROUP BY` and `CASE`
