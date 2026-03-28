@@ -1,51 +1,50 @@
-# ER-ДИАГРАММА 
+# ER DIAGRAM
 
 - [PK] — Primary Key
 - [FK] — Foreign Key
 - [U]  — Unique
 - <1>  — One
-- <М>  — Many
+- <M>  — Many
 
-[Диаграмма](ER.png)
+[Diagram](ER.png)
 
 <img width="586" height="1331" alt="image" src="https://github.com/user-attachments/assets/767a4dfe-112a-48f0-9b46-95ab91513a38" />
 
-
-## СВЯЗИ (RELATIONSHIPS):
+## RELATIONSHIPS
 
 1. USER (1) ──< BOOKING (M)
-   "Один пользователь может создать много бронирований"
+   "One user can create many bookings"
 
 2. ROOM (1) ──< BOOKING (M)
-   "Одна комната может иметь много бронирований"
+   "One room can have many bookings"
 
 3. BOOKING (1) ──< PAYMENT (1)
-   "У одного бронирования может быть один платёж"
+   "One booking can have one payment"
 
 4. COWORKING (1) ──< ROOM (M)
-   "Один коворкинг содержит много комнат"
+   "One coworking space contains many rooms"
 
 5. ROOM (M) ──< ROOM_EQUIPMENT >── EQUIPMENT (M)
-   "Много комнат может иметь много оборудования (many-to-many)"
+   "Many rooms can have many equipment items (many-to-many)"
 
-## КЛЮЧЕВЫЕ CONSTRAINTS:
+## KEY CONSTRAINTS
 
 1. booking.starts_at < booking.ends_at
-   "Время начала должно быть раньше времени окончания"
+   "Start time must be earlier than end time"
 
-2. EXCLUDE CONSTRAINT на (room_id, tsrange(starts_at, ends_at))
-   "Одна комната не может быть забронирована на пересекающиеся интервалы"
+2. EXCLUDE CONSTRAINT on (room_id, tsrange(starts_at, ends_at))
+   "One room cannot be booked for overlapping time intervals"
 
 3. room.capacity > 0
-   "Вместимость должна быть положительным числом"
+   "Capacity must be a positive number"
 
 4. payment.booking_id UNIQUE
-   "У одного бронирования только один платёж"
+   "One booking can have only one payment"
 
 5. user.email UNIQUE
-   "Email уникален в системе"
+   "Email must be unique in the system"
 
-## ИНДЕКСЫ:
+## INDEXES
 
 1. idx_user_email           ON user(email)
 2. idx_room_coworking       ON room(coworking_id)
@@ -56,61 +55,61 @@
 7. idx_payment_status       ON payment(status)
 8. idx_room_equipment_*     ON room_equipment(room_id, equipment_id)
 
-## КАРДИНАЛЬНОСТИ:
+## CARDINALITIES
 
 USER ─────────[1:N]────────> BOOKING
-  "Пользователь создаёт 0 или более бронирований"
+  "A user creates 0 or more bookings"
 
 ROOM ─────────[1:N]────────> BOOKING
-  "Комната имеет 0 или более бронирований"
+  "A room has 0 or more bookings"
 
 BOOKING ──────[1:1]────────> PAYMENT
-  "Бронирование имеет 0 или 1 платёж"
+  "A booking has 0 or 1 payment"
 
 COWORKING ────[1:N]────────> ROOM
-  "Коворкинг содержит 1 или более комнат"
+  "A coworking space contains 1 or more rooms"
 
 ROOM ─────────[M:N]────────> EQUIPMENT
-  "Комната имеет 0 или более оборудования"
-  "Оборудование используется в 0 или более комнатах"
+  "A room has 0 or more equipment items"
+  "An equipment item is used in 0 or more rooms"
 
-## СТАТУСЫ:
+## STATUSES
 
 USER.role:
-  - user      (обычный клиент)
-  - manager   (менеджер коворкинга)
-  - admin     (администратор системы)
+  - user      (regular client)
+  - manager   (coworking manager)
+  - admin     (system administrator)
 
 BOOKING.status:
-  - pending   (ожидает подтверждения/оплаты)
-  - confirmed (подтверждено и оплачено)
-  - cancelled (отменено пользователем)
-  - completed (завершено, прошло)
+  - pending   (awaiting confirmation/payment)
+  - confirmed (confirmed and paid)
+  - cancelled (cancelled by user)
+  - completed (finished, past)
 
 PAYMENT.status:
-  - pending   (ожидает оплаты)
-  - paid      (оплачено)
-  - failed    (ошибка оплаты)
-  - refunded  (возвращено)
+  - pending   (awaiting payment)
+  - paid      (paid)
+  - failed    (payment error)
+  - refunded  (refunded)
 
-## ПРИМЕР ДАННЫХ:
+## SAMPLE DATA
 
 USER:
-  user_id=3, email="alice@example.com", full_name="Алиса Петрова", role="user"
+  user_id=3, email="alice@example.com", full_name="Alice Petrova", role="user"
 
 COWORKING:
-  coworking_id=1, name="Центральный Hub", address="Москва, ул. Тверская, д. 10"
+  coworking_id=1, name="Central Hub", address="Moscow, Tverskaya St., 10"
 
 ROOM:
-  room_id=1, coworking_id=1, name="Переговорная Alpha", capacity=6, hourly_rate=1500.00
+  room_id=1, coworking_id=1, name="Meeting Room Alpha", capacity=6, hourly_rate=1500.00
 
 EQUIPMENT:
-  equipment_id=1, name="Проектор"
-  equipment_id=2, name="Белая доска"
+  equipment_id=1, name="Projector"
+  equipment_id=2, name="Whiteboard"
 
 ROOM_EQUIPMENT:
-  (room_id=1, equipment_id=1)  # Alpha имеет Проектор
-  (room_id=1, equipment_id=2)  # Alpha имеет Белую доску
+  (room_id=1, equipment_id=1)  # Alpha has Projector
+  (room_id=1, equipment_id=2)  # Alpha has Whiteboard
 
 BOOKING:
   booking_id=6, room_id=1, user_id=3,
@@ -121,12 +120,10 @@ PAYMENT:
   payment_id=6, booking_id=6, amount=3000.00, status="paid",
   payment_method="card", paid_at="2024-12-15 10:05"
 
-## НОРМАЛЬНАЯ ФОРМА:
+## NORMAL FORM
 
-Все таблицы находятся в BCNF (Boyce-Codd Normal Form):
-  - Каждая функциональная зависимость X → Y, где X — суперключ
-  - Нет транзитивных зависимостей
-  - Нет частичных зависимостей
-  - Атомарные значения (1НФ)
-
-
+All tables are in BCNF (Boyce-Codd Normal Form):
+  - Every functional dependency X → Y where X is a superkey
+  - No transitive dependencies
+  - No partial dependencies
+  - Atomic values (1NF)
